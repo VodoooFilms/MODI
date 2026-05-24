@@ -1,0 +1,27 @@
+{
+  "name": "MobMidi.pro – BLE MIDI Controller",
+  "short_name": "MobMidi",
+  "description": "Professional BLE MIDI Controller with real-time low-latency piano keyboard, pitch bend, modulation, and multi-touch polyphony.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#0A0B0D",
+  "theme_color": "#0088FF",
+  "categories": ["music", "utilities", "productivity"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "prefer_related_applications": false
+}

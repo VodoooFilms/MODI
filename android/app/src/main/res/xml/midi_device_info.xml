@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<devices xmlns:android="http://schemas.android.com/apk/res/android">
+    <device manufacturer="MobMidi Inc" product="MobMidi BLE Controller" name="MobMidi Controller">
+        <!-- 
+          Android MIDI Port Mappings.
+          The outbound port reports MIDI events trigger on the custom board keys 
+          to connected host targets like macOS/iOS DAWs.
+        -->
+        <input-port name="input" />
+        <output-port name="output" />
+    </device>
+</devices>
