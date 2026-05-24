@@ -11,15 +11,23 @@ Controlador **MIDI over BLE** open source para Android, pensado para tocar desde
 ## Features
 
 - teclado multitouch de 1.5 octavas
+- selector de layouts dentro de la app
+- pantalla `Piano` con ribbons expresivos
+- pantalla `Drum Pads` con grilla 3x3
+- control de nivel por fila en `Drum Pads`
+- rack lateral de FX en `Drum Pads` (`Filter`, `Reverb`, `Delay`, `Drive`)
+- pantalla `Pads + XY Mod` con 6 pads y modulador bidimensional
 - envio de `Note On` / `Note Off` por BLE MIDI
 - `pitch bend`
 - `mod wheel`
 - `sustain`
 - cambio de octava
 - velocidad `dynamic` o `fixed`
+- compactacion de eventos continuos para mejor feel en tiempo real
 - advertising BLE MIDI como periferico Android
 - servicio foreground para mantener la sesion BLE mas estable
 - UI nativa en `Canvas` para reducir latencia tactil
+- captura tactil con historico de movimiento para mejorar glissandos y ribbons
 
 ## Estado
 
@@ -29,13 +37,15 @@ Hoy el proyecto ya puede:
 - conectarse desde `Audio MIDI Setup` en macOS
 - usarse con GarageBand y hosts compatibles
 - enviar notas, sustain, bend y modulacion
+- enviar controles por `CC` desde pads, sliders y superficie `XY`
+- alternar entre superficies de control sin salir de la vista principal
 - mostrar estado de transporte BLE en app y notificacion
 
 ## Demo Visual
 
 - Logo principal: [public/modi-logo.png](public/modi-logo.png)
 - Favicon / PWA iconos: [public/favicon.png](public/favicon.png), [public/icon-192.png](public/icon-192.png), [public/icon-512.png](public/icon-512.png)
-- APK local compartible: [share/MODI-v1.1-release.apk](share/MODI-v1.1-release.apk)
+- APK local compartible: [share/MODI-v1.3-release.apk](share/MODI-v1.3-release.apk)
 - QR local de instalacion: [share/modi-apk-qr.png](share/modi-apk-qr.png)
 
 ## Stack
@@ -54,6 +64,19 @@ Hoy el proyecto ya puede:
 - [android/app/src/main/java/com/mobmidi/controller/MidiBleManager.kt](android/app/src/main/java/com/mobmidi/controller/MidiBleManager.kt)
 - [android/app/src/main/java/com/mobmidi/controller/PianoView.kt](android/app/src/main/java/com/mobmidi/controller/PianoView.kt)
 - [src/App.tsx](src/App.tsx)
+
+## Layouts Actuales
+
+- `Piano`: teclado de 1.5 octavas con `pitch bend`, `modulation`, `sustain`, cambio de octava y velocity dinamica/fija
+- `Drum Pads`: 9 pads con mapeo por nota, 3 controles de nivel por fila y 4 faders de FX por `CC`
+- `Pads + XY Mod`: 6 pads asignados a notas y una superficie `XY` para modular dos `CC` en tiempo real
+
+## Mapeo MIDI Actual
+
+- Drum pads: `36, 38, 42, 39, 41, 43, 45, 47, 49`
+- Drum FX: `CC74`, `CC91`, `CC94`, `CC71`
+- Hybrid pads: `48, 50, 52, 53, 55, 57`
+- XY mod: `X -> CC1`, `Y -> CC74`
 
 ## Requisitos
 
@@ -102,12 +125,19 @@ python3 -m http.server 8081 --bind 0.0.0.0
 
 Luego abre desde el telefono la URL local correspondiente o escanea el QR generado en `share/modi-apk-qr.png`.
 
+Rutas locales utiles:
+
+- `http://<tu-ip-local>:8081/`
+- `http://<tu-ip-local>:8081/app.apk`
+- `http://<tu-ip-local>:8081/latest.apk`
+
 ## Roadmap
 
 - mejorar estabilidad de advertising BLE en mas dispositivos
 - reforzar diagnostico y visibilidad del estado de conexion
 - afinar mas el comportamiento en tiempo real bajo carga tactil
 - presets de layout / escalas
+- reasignacion editable de pads, faders y superficie XY
 - ampliar rango de teclado
 - explorar USB MIDI
 - hacer mas pruebas reales en vivo

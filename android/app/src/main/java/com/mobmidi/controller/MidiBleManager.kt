@@ -220,6 +220,7 @@ class MidiBleManager(private val context: Context, private val statusCallback: C
      */
     fun sendMidiEvent(status: Int, data1: Int, data2: Int) {
         if (subscribedDevices.isEmpty()) return
+        coalesceRealtimeControllers(status, data1)
         messageQueue.add(MidiMessage(status, data1, data2))
         triggerSend()
     }
@@ -239,6 +240,17 @@ class MidiBleManager(private val context: Context, private val statusCallback: C
             isSending = true
         }
         sendNextMessage()
+    }
+
+    private fun coalesceRealtimeControllers(status: Int, data1: Int) {
+        when {
+            status == 0xE0 -> {
+                messageQueue.removeIf { it.status == 0xE0 }
+            }
+            status == 0xB0 && data1 == 1 -> {
+                messageQueue.removeIf { it.status == 0xB0 && it.data1 == 1 }
+            }
+        }
     }
 
     private fun sendNextMessage() {
@@ -269,49 +281,65 @@ class MidiBleManager(private val context: Context, private val statusCallback: C
             return
         }
 
-        // CRITICAL FIX: Set characteristic value inside loop to avoid race condition
-        // Each device needs fresh packet data to prevent stale reads
-        var notifiedCount = 0
+        // Track async notification completions so we only release the sender once the current
+        // BLE packet has actually finished transmitting to all subscribed hosts.
+        var scheduledNotifications = 0
         var failedDevices = 0
-        
+
+        synchronized(this) {
+            pendingNotifications = 0
+        }
+
         for (device in devicesToNotify) {
             try {
+                synchronized(this) {
+                    pendingNotifications++
+                }
+
                 // Set characteristic value immediately before each notify call
                 characteristic.value = notificationPacket
                 val success = gattServer.notifyCharacteristicChanged(device, characteristic, false)
                 if (success) {
-                    notifiedCount++
+                    scheduledNotifications++
                 } else {
+                    synchronized(this) {
+                        pendingNotifications = maxOf(0, pendingNotifications - 1)
+                    }
                     Log.e(TAG, "Failed to notify characteristic changed for ${device.address}")
                     failedDevices++
                 }
             } catch (e: SecurityException) {
+                synchronized(this) {
+                    pendingNotifications = maxOf(0, pendingNotifications - 1)
+                }
                 Log.e(TAG, "SecurityException: missing permissions to notify device: ${device.address}", e)
                 failedDevices++
             } catch (e: Exception) {
+                synchronized(this) {
+                    pendingNotifications = maxOf(0, pendingNotifications - 1)
+                }
                 Log.e(TAG, "Unexpected error notifying device ${device.address}: ${e.message}", e)
                 failedDevices++
             }
         }
 
-        // CRITICAL FIX: Properly synchronize counter updates and state transitions
-        synchronized(this) {
-            pendingNotifications = maxOf(0, pendingNotifications - notifiedCount)
-            
-            // Reset sending flag only when all notifications are complete or failed
-            if (notifiedCount == 0 || pendingNotifications <= 0) {
+        val shouldSendNextImmediately = synchronized(this) {
+            // If no notify call was accepted we must release the sender here because no
+            // onNotificationSent callback will arrive for this packet.
+            if (scheduledNotifications == 0) {
                 isSending = false
                 pendingNotifications = 0
-                
-                // If all devices failed, clear queue to prevent infinite retry loop
+
                 if (failedDevices >= devicesToNotify.size) {
                     messageQueue.clear()
                 }
+                true
+            } else {
+                false
             }
         }
 
-        // Continue processing queue if there are more messages
-        if (notifiedCount > 0 && pendingNotifications == 0) {
+        if (shouldSendNextImmediately) {
             mainHandler.post {
                 triggerSend()
             }
@@ -379,6 +407,9 @@ class MidiBleManager(private val context: Context, private val statusCallback: C
                 }
                 if (pendingNotifications == 0) {
                     isSending = false
+                    if (status != BluetoothGatt.GATT_SUCCESS) {
+                        Log.w(TAG, "Notification completed with status=$status for ${device.address}")
+                    }
                     true
                 } else {
                     false
