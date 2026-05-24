@@ -24,7 +24,7 @@ import android.view.View
 import android.widget.Toast
 
 /**
- * Entry Point of MobMidi Android Application.
+ * Entry Point of MODI Android Application.
  * Manages Permissions Flow, Bluetooth GATT server, and Low-Latency Native Audio Fallback.
  */
 class MainActivity : Activity(), MidiBleManager.ConnectionStatusListener, PianoView.MidiEventListener {
@@ -1063,7 +1063,7 @@ class PianoView @JvmOverloads constructor(
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="MobMidi Controller"
+        android:label="MODI"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
@@ -1101,7 +1101,7 @@ class PianoView @JvmOverloads constructor(
     description: "MIDI Device Service capability profile containing target manufacturer details, product title, and physical port assignments for routing real-time notes.",
     code: `<?xml version="1.0" encoding="utf-8"?>
 <devices xmlns:android="http://schemas.android.com/apk/res/android">
-    <device manufacturer="MobMidi Inc" product="MobMidi BLE Controller" name="MobMidi Controller">
+    <device manufacturer="MODI" product="MODI MIDI Over BLE" name="MODI Controller">
         <!-- 
           Android MIDI Port Mappings.
           Reports MIDI events triggered on the custom board keys 

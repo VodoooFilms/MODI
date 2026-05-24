@@ -1,6 +1,6 @@
 {
-  "name": "MobMidi",
-  "description": "Professional BLE MIDI Controller for Android with ultra-low latency custom piano view and BLE advertising.",
+  "name": "MODI",
+  "description": "MODI is a BLE MIDI controller for Android with ultra-low latency touch input and reliable BLE advertising.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

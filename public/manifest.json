@@ -1,7 +1,7 @@
 {
-  "name": "MobMidi.pro – BLE MIDI Controller",
-  "short_name": "MobMidi",
-  "description": "Professional BLE MIDI Controller with real-time low-latency piano keyboard, pitch bend, modulation, and multi-touch polyphony.",
+  "name": "MODI - MIDI Over BLE",
+  "short_name": "MODI",
+  "description": "MODI is a BLE MIDI controller with a real-time low-latency piano keyboard, pitch bend, modulation, sustain and multi-touch polyphony.",
   "start_url": "/",
   "display": "standalone",
   "orientation": "landscape",

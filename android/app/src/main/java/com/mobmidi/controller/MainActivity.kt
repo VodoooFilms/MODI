@@ -16,7 +16,7 @@ import android.view.WindowManager
 import android.widget.Toast
 
 /**
- * Entry Point of MobMidi Android Application.
+ * Entry point of the MODI Android application.
  * Manages Permissions Flow, Bluetooth GATT server, and Low-Latency Native Audio Fallback.
  */
 class MainActivity : Activity(), MidiBleManager.ConnectionStatusListener, PianoView.MidiEventListener {

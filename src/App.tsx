@@ -849,7 +849,7 @@ export default function App() {
 
   const downloadProjectZip = () => {
     // Generate a simple manifest file description block in text or report
-    const readmeContent = `MobMidi Android Controller Project Files
+    const readmeContent = `MODI Android Controller Project Files
 This project folder is setup for direct deployment in Android Studio.
 Files included:
 - MainActivity.kt: App Permission handler & native low-latency Synthesizer fallback
@@ -862,7 +862,7 @@ Steps to run:
 1. Load this folder into Android Studio Bumblebee or newer.
 2. Compile and run targeting mineral API 26 or newer (Oreo and higher).
 3. Connect your Android phone to development, grant Bluetooth permissions on start.
-4. Open macOS Audio Midi Setup or connection panels in BLE MIDI Apps on iOS to discover 'MobMidi Controller'!`;
+4. Open macOS Audio MIDI Setup or compatible BLE MIDI panels to discover 'MODI Controller'!`;
 
     const readmeBlob = new Blob([readmeContent], { type: "text/plain" });
     const readmeUrl = URL.createObjectURL(readmeBlob);
@@ -939,7 +939,7 @@ Steps to run:
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-xl font-black tracking-tight text-white uppercase font-sans">
-                  MobMidi<span className="text-[#0088FF]">.pro</span>
+                  MODI
                 </h1>
                 <span className="text-[9px] bg-[#0A0B0D] text-[#8E9299] font-mono px-2.5 py-0.5 rounded border border-[#1A1C20] font-bold tracking-widest">
                   BLE ADAPTER v2.4.0
@@ -1295,7 +1295,7 @@ Steps to run:
                 <div className="bg-[#151619] p-4 rounded-lg border border-[#2A2D35] flex flex-col gap-3 shadow-sm">
                   <h4 className="text-xs font-black text-white uppercase tracking-wider font-mono">Module Specification</h4>
                   <p className="text-xs text-[#8E9299] leading-relaxed">
-                    This file is part of the <span className="text-white font-semibold">MobMidi Package</span> structure built targeting Oreo, Android 12, 13 and higher with complete BLE GATT protocols.
+                    This file is part of the <span className="text-white font-semibold">MODI package</span> structure built targeting Oreo, Android 12, 13 and higher with complete BLE GATT protocols.
                   </p>
                 </div>
               </div>
@@ -1470,7 +1470,7 @@ Steps to run:
       <footer className="border-t-2 border-[#1A1C20] bg-[#151619] py-4 px-6 mt-auto text-center" id="applet-global-footer">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#8E9299]">
           <div className="flex items-center gap-2 select-none">
-            <span className="text-white font-black tracking-widest uppercase text-[10px]">MobMidi Controller</span>
+            <span className="text-white font-black tracking-widest uppercase text-[10px]">MODI Controller</span>
             <span>&bull;</span>
             <span className="uppercase font-semibold text-[9.5px]">Created by Senior Audio Engineer</span>
           </div>

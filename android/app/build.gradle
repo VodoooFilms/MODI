@@ -11,8 +11,8 @@ android {
         applicationId "com.mobmidi.controller"
         minSdk 26 // Android Oreo (requires BLE + simple MIDI capabilities)
         targetSdk 34
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
     }
 
     buildTypes {

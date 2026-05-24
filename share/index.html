@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MODI APK Download</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0a0b0d;
+        --panel: #151619;
+        --text: #f5f7fb;
+        --muted: #a4adba;
+        --accent: #1da1ff;
+        --accent2: #ff8f70;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(29, 161, 255, 0.18), transparent 30%),
+          radial-gradient(circle at top right, rgba(255, 143, 112, 0.16), transparent 32%),
+          var(--bg);
+        color: var(--text);
+        display: grid;
+        place-items: center;
+        padding: 24px;
+      }
+      main {
+        width: min(760px, 100%);
+        background: rgba(21, 22, 25, 0.92);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 24px;
+        padding: 28px;
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+      }
+      .hero {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 24px;
+      }
+      .hero img.logo {
+        width: 112px;
+        height: 112px;
+        object-fit: contain;
+        border-radius: 24px;
+        background: #0a0b0d;
+        padding: 12px;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: clamp(2rem, 4vw, 3rem);
+        letter-spacing: 0.04em;
+      }
+      p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+      .actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+        margin-top: 28px;
+      }
+      .card {
+        background: rgba(10, 11, 13, 0.82);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        padding: 20px;
+      }
+      .download {
+        display: inline-block;
+        margin-top: 14px;
+        padding: 14px 18px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        color: white;
+        text-decoration: none;
+        font-weight: 700;
+      }
+      .qr {
+        width: 100%;
+        max-width: 220px;
+        border-radius: 16px;
+        background: white;
+        padding: 12px;
+      }
+      code {
+        color: var(--text);
+        font-size: 0.95rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="hero">
+        <img class="logo" src="modi-logo.png" alt="MODI logo" />
+        <div>
+          <h1>MODI 1.1</h1>
+          <p>APK release actualizada lista para instalar por red local.</p>
+        </div>
+      </section>
+
+      <section class="actions">
+        <article class="card">
+          <h2>Descarga directa</h2>
+          <p>Abre este enlace desde el telefono Android conectado a la misma red Wi-Fi.</p>
+          <a class="download" href="MODI-v1.1-release.apk">Descargar APK</a>
+          <p style="margin-top: 14px;"><code>http://192.168.1.11:8081/MODI-v1.1-release.apk</code></p>
+        </article>
+
+        <article class="card">
+          <h2>QR de instalacion</h2>
+          <p>Escanea el QR para abrir la descarga sin escribir la URL.</p>
+          <img class="qr" src="modi-apk-qr.png" alt="QR for MODI APK" />
+        </article>
+      </section>
+    </main>
+  </body>
+  </html>

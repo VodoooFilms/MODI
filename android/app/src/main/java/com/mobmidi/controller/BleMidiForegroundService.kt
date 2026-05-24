@@ -85,10 +85,10 @@ class BleMidiForegroundService : Service(), MidiBleManager.ConnectionStatusListe
 
         val channel = NotificationChannel(
             NOTIFICATION_CHANNEL_ID,
-            "mobMIDI BLE",
+            "MODI BLE",
             NotificationManager.IMPORTANCE_LOW
         ).apply {
-            description = "Mantiene activo el controlador BLE MIDI"
+            description = "Mantiene activo el controlador MIDI BLE de MODI"
         }
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -104,7 +104,7 @@ class BleMidiForegroundService : Service(), MidiBleManager.ConnectionStatusListe
 
         return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(android.R.drawable.stat_sys_data_bluetooth)
-            .setContentTitle("mobMIDI activo")
+            .setContentTitle("MODI activo")
             .setContentText(statusText)
             .setOngoing(true)
             .setOnlyAlertOnce(true)

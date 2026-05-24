@@ -1,135 +1,139 @@
 # MODI
 
-`MODI` es un controlador MIDI open source para usar desde el celular como instrumento de performance en tiempo real. Nacio como `mobMIDI`, y la idea del proyecto sigue siendo la misma: convertir un telefono Android en un controlador BLE MIDI serio, portable y rapido, compatible con software como GarageBand, Audio MIDI Setup en macOS y otros hosts BLE MIDI.
+![MODI logo](public/modi-logo.png)
 
-## Que hace
+Controlador **MIDI over BLE** open source para Android, pensado para tocar desde el celular con baja latencia, multitouch real y controles expresivos listos para performance.
 
-- teclado tactil multitouch de 1.5 octavas
+## Resumen
+
+`MODI` nacio como `mobMIDI`, pero hoy apunta a algo mas claro: convertir un telefono Android en un instrumento/controlador BLE MIDI serio, portable y hackeable, compatible con hosts como GarageBand, Audio MIDI Setup en macOS y otros entornos con soporte para Bluetooth LE MIDI.
+
+## Features
+
+- teclado multitouch de 1.5 octavas
 - envio de `Note On` / `Note Off` por BLE MIDI
 - `pitch bend`
 - `mod wheel`
 - `sustain`
 - cambio de octava
-- modo de velocidad `dynamic` o `fixed`
-- conexion BLE MIDI directa con macOS y DAWs compatibles
+- velocidad `dynamic` o `fixed`
+- advertising BLE MIDI como periferico Android
+- servicio foreground para mantener la sesion BLE mas estable
+- UI nativa en `Canvas` para reducir latencia tactil
 
-## Objetivo del proyecto
+## Estado
 
-Construir un controlador MIDI mobile que no se sienta como demo, sino como instrumento:
-
-- rapido al tocar
-- estable al conectarse
-- usable en ensayo, composicion y performance
-- completamente hackeable y extensible
-
-## Estado actual
-
-El proyecto ya puede:
+Hoy el proyecto ya puede:
 
 - anunciarse como dispositivo BLE MIDI en Android
 - conectarse desde `Audio MIDI Setup` en macOS
-- usarse con GarageBand
+- usarse con GarageBand y hosts compatibles
 - enviar notas, sustain, bend y modulacion
+- mostrar estado de transporte BLE en app y notificacion
 
-Trabajo reciente incluido:
+## Demo Visual
 
-- correccion de multitouch para evitar `Note Off` prematuros
-- mejor manejo al arrastrar el dedo fuera del teclado
-- limpieza del `Manifest` Android
-- servicio `ForegroundService` para sostener BLE MIDI de forma mas robusta
-- watchdog interno para reintentar advertising BLE
-- estado visible de transporte BLE en app y notificacion
+- Logo principal: [public/modi-logo.png](public/modi-logo.png)
+- Favicon / PWA iconos: [public/favicon.png](public/favicon.png), [public/icon-192.png](public/icon-192.png), [public/icon-512.png](public/icon-512.png)
+- APK local compartible: [share/MODI-v1.1-release.apk](share/MODI-v1.1-release.apk)
+- QR local de instalacion: [share/modi-apk-qr.png](share/modi-apk-qr.png)
 
-## Stack tecnico
+## Stack
 
-- Android nativo en Kotlin
-- Bluetooth LE MIDI (`GATT server` + advertising BLE)
-- UI custom dibujada en `Canvas` para minimizar latencia tactil
-- proyecto web auxiliar con Vite/React dentro del repo
+- Kotlin
+- Android SDK 34
+- Bluetooth LE MIDI
+- `GATT server` + advertising BLE
+- `Canvas` nativo para UI tactil
+- Vite + React para el simulador/documentacion web del repo
 
-## Estructura importante
+## Estructura Principal
 
-- [MainActivity.kt](/Users/antoin/Documents/mobMIDI_project/mobmidi/android/app/src/main/java/com/mobmidi/controller/MainActivity.kt)
-  Entrada principal de la app y puente entre UI y servicio BLE.
-- [BleMidiForegroundService.kt](/Users/antoin/Documents/mobMIDI_project/mobmidi/android/app/src/main/java/com/mobmidi/controller/BleMidiForegroundService.kt)
-  Servicio persistente para mantener vivo el controlador BLE MIDI.
-- [MidiBleManager.kt](/Users/antoin/Documents/mobMIDI_project/mobmidi/android/app/src/main/java/com/mobmidi/controller/MidiBleManager.kt)
-  Advertising, GATT, conexion BLE y envio de mensajes MIDI.
-- [PianoView.kt](/Users/antoin/Documents/mobMIDI_project/mobmidi/android/app/src/main/java/com/mobmidi/controller/PianoView.kt)
-  Interfaz tactil del teclado y controles expresivos.
+- [android/app/src/main/java/com/mobmidi/controller/MainActivity.kt](android/app/src/main/java/com/mobmidi/controller/MainActivity.kt)
+- [android/app/src/main/java/com/mobmidi/controller/BleMidiForegroundService.kt](android/app/src/main/java/com/mobmidi/controller/BleMidiForegroundService.kt)
+- [android/app/src/main/java/com/mobmidi/controller/MidiBleManager.kt](android/app/src/main/java/com/mobmidi/controller/MidiBleManager.kt)
+- [android/app/src/main/java/com/mobmidi/controller/PianoView.kt](android/app/src/main/java/com/mobmidi/controller/PianoView.kt)
+- [src/App.tsx](src/App.tsx)
 
 ## Requisitos
 
 - Android 8.0+ (`minSdk 26`)
 - Bluetooth LE
-- macOS o software que soporte BLE MIDI si quieres usarlo como controlador externo
 - Java 17 para compilar el APK
+- macOS o software/DAW con soporte BLE MIDI si quieres usarlo como controlador externo
 
-## Compilar el APK
+## Desarrollo Web
+
+```bash
+npm install
+npm run dev
+```
+
+Build de verificacion:
+
+```bash
+npm run build
+```
+
+## Compilar APK
 
 Desde la carpeta `android`:
 
 ```bash
 export JAVA_HOME=/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home
 export PATH="$JAVA_HOME/bin:$PATH"
-./gradlew assembleDebug
+./gradlew assembleRelease
 ```
 
 APK generado:
 
 ```text
-android/app/build/outputs/apk/debug/app-debug.apk
+android/app/build/outputs/apk/release/app-release.apk
 ```
 
-## Instalar en el celular
+## Instalar En El Celular
 
-Si ya tienes un server local sirviendo la build, abre el APK desde el navegador del telefono. Si no:
+Si quieres compartir una build por red local:
 
 ```bash
-python3 -m http.server 8080 --bind 0.0.0.0
+cd share
+python3 -m http.server 8081 --bind 0.0.0.0
 ```
 
-Luego abre desde el celular:
-
-```text
-http://TU_IP_LOCAL:8080/mobmidi-latest.apk
-```
-
-## Conectar con GarageBand en macOS
-
-1. Instala y abre `MODI` en el telefono.
-2. Acepta permisos de Bluetooth.
-3. Deja la app abierta.
-4. En macOS abre `Audio MIDI Setup`.
-5. Entra a configuracion Bluetooth MIDI.
-6. Busca el telefono y conecta.
-7. Abre GarageBand y selecciona una pista de instrumento.
-8. Toca desde el celular.
-
-## Problemas conocidos
-
-- BLE MIDI en Android sigue siendo sensible al comportamiento del sistema y al manejo de energia del telefono.
-- La estabilidad final depende bastante del dispositivo Android y su stack Bluetooth.
-- Si el telefono deja de anunciarse, macOS lo mostrara como `Offline` o dejara de verlo.
-- El objetivo actual es seguir endureciendo el servicio BLE para uso mas confiable en vivo.
+Luego abre desde el telefono la URL local correspondiente o escanea el QR generado en `share/modi-apk-qr.png`.
 
 ## Roadmap
 
 - mejorar estabilidad de advertising BLE en mas dispositivos
-- agregar diagnostico de conexion mas claro
-- mejorar priorizacion de eventos expresivos frente a rafagas de notas
+- reforzar diagnostico y visibilidad del estado de conexion
+- afinar mas el comportamiento en tiempo real bajo carga tactil
 - presets de layout / escalas
-- mas rango de teclado
-- opcion de USB MIDI
-- pruebas reales en vivo y afinacion de latencia
+- ampliar rango de teclado
+- explorar USB MIDI
+- hacer mas pruebas reales en vivo
 
-## Filosofia open source
+## Contribuir
 
-`MODI` esta pensado como herramienta abierta para musicos, makers y developers que quieran:
+Si quieres aportar:
+
+- abre un issue con el bug o la idea
+- propone mejoras de latencia, BLE o UX musical
+- prueba en distintos telefonos Android
+- comparte feedback de uso real en ensayo o escenario
+
+Las contribuciones pequenas tambien sirven mucho: logs, edge cases, ideas de layout y reportes de compatibilidad.
+
+## Filosofia Open Source
+
+`MODI` esta hecho para musicos, makers y developers que quieran:
 
 - tocar desde el celular
 - modificar el layout
 - experimentar con nuevos gestos
 - adaptar el controlador a su propio workflow
 
-Si quieres usarlo, mejorarlo o bifurcarlo, esa es justamente la idea.
+El objetivo no es esconder el instrumento detras de una app cerrada, sino abrirlo para iterar, estudiar y tocar mejor.
+
+## Licencia
+
+Este proyecto se distribuye bajo la licencia **MIT**. Revisa [LICENSE](LICENSE).
