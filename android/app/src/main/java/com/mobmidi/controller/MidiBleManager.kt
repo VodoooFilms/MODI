@@ -260,8 +260,7 @@ class MidiBleManager(private val context: Context, private val statusCallback: C
         }
 
         val notificationPacket = encodeMidiMessage(nextMessage)
-        characteristic.value = notificationPacket
-
+        
         val devicesToNotify = subscribedDevices.values.toList()
         if (devicesToNotify.isEmpty()) {
             synchronized(this) {
@@ -270,35 +269,49 @@ class MidiBleManager(private val context: Context, private val statusCallback: C
             return
         }
 
-        synchronized(this) {
-            pendingNotifications = devicesToNotify.size
-        }
-
+        // CRITICAL FIX: Set characteristic value inside loop to avoid race condition
+        // Each device needs fresh packet data to prevent stale reads
         var notifiedCount = 0
+        var failedDevices = 0
+        
         for (device in devicesToNotify) {
             try {
+                // Set characteristic value immediately before each notify call
+                characteristic.value = notificationPacket
                 val success = gattServer.notifyCharacteristicChanged(device, characteristic, false)
                 if (success) {
                     notifiedCount++
                 } else {
                     Log.e(TAG, "Failed to notify characteristic changed for ${device.address}")
-                    synchronized(this) {
-                        if (pendingNotifications > 0) pendingNotifications--
-                    }
+                    failedDevices++
                 }
             } catch (e: SecurityException) {
                 Log.e(TAG, "SecurityException: missing permissions to notify device: ${device.address}", e)
-                synchronized(this) {
-                    if (pendingNotifications > 0) pendingNotifications--
+                failedDevices++
+            } catch (e: Exception) {
+                Log.e(TAG, "Unexpected error notifying device ${device.address}: ${e.message}", e)
+                failedDevices++
+            }
+        }
+
+        // CRITICAL FIX: Properly synchronize counter updates and state transitions
+        synchronized(this) {
+            pendingNotifications = maxOf(0, pendingNotifications - notifiedCount)
+            
+            // Reset sending flag only when all notifications are complete or failed
+            if (notifiedCount == 0 || pendingNotifications <= 0) {
+                isSending = false
+                pendingNotifications = 0
+                
+                // If all devices failed, clear queue to prevent infinite retry loop
+                if (failedDevices >= devicesToNotify.size) {
+                    messageQueue.clear()
                 }
             }
         }
 
-        if (notifiedCount == 0 || pendingNotifications <= 0) {
-            synchronized(this) {
-                isSending = false
-                pendingNotifications = 0
-            }
+        // Continue processing queue if there are more messages
+        if (notifiedCount > 0 && pendingNotifications == 0) {
             mainHandler.post {
                 triggerSend()
             }

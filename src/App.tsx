@@ -195,14 +195,42 @@ export default function App() {
     osc.frequency.setTargetAtTime(targetFreq, ctx.currentTime, 0.03); // exponential slide
   };
 
-  // Turn off all active oscillators
   const panicShutdownLocalSynth = () => {
-    activeOscillatorsRef.current.forEach((_, note) => {
-      stopLocalNote(note, true);
+    activeOscillatorsRef.current.forEach((voice, note) => {
+      try {
+        const ctx = getAudioContext();
+        if (ctx) {
+          voice.gain.gain.cancelScheduledValues(ctx.currentTime);
+          voice.gain.gain.setValueAtTime(voice.gain.gain.value, ctx.currentTime);
+          voice.gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.05);
+        }
+      } catch (e) {}
+      
+      // Schedule cleanup after release envelope
+      setTimeout(() => {
+        try {
+          voice.osc.stop();
+          voice.osc.disconnect();
+          voice.gain.disconnect();
+        } catch (e) {}
+      }, 70);
     });
+    
+    // Clear refs immediately to prevent memory leaks
     activeOscillatorsRef.current.clear();
     sustainingNotesRef.current.clear();
   };
+
+  // Cleanup oscillators on component unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      panicShutdownLocalSynth();
+      if (audioCtxRef.current) {
+        audioCtxRef.current.close();
+        audioCtxRef.current = null;
+      }
+    };
+  }, []);
 
   // --- HTML5 Canvas Piano Engine inside React ---
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -490,8 +518,8 @@ export default function App() {
     const displayY = bY + 10;
     
     ctx.fillStyle = "#8E9299";
-    ctx.font = "bold 8px monospace";
-    ctx.fillText("OCTAVE", octaveCenterX, bY + 8);
+    ctx.font = "bold 7px monospace";
+    ctx.fillText("OCT", octaveCenterX, bY + 8);
     
     drawRoundRect(displayX, displayY, displayW, displayH, 2, true, "#0A0B0D");
     ctx.fillStyle = "#0088FF";
@@ -548,8 +576,8 @@ export default function App() {
     ctx.fillRect(pbIndicatorX - 1.5, rY + 1, 3, ribbonH - 2);
     
     ctx.fillStyle = "#8E9299";
-    ctx.font = "bold 8px monospace";
-    ctx.fillText("PITCH BEND", pbLeft + pbWidth / 2, rY + ribbonH - 2);
+    ctx.font = "bold 7px monospace";
+    ctx.fillText("PITCH", pbLeft + pbWidth / 2, rY + ribbonH - 4);
 
     // 4. Modulation Ribbon Area
     const modLeft = pianoViewWidth * 0.50;
@@ -581,8 +609,8 @@ export default function App() {
     ctx.fillRect(modIndicatorX - 1.5, rY + 1, 2, ribbonH - 2);
 
     ctx.fillStyle = "#8E9299";
-    ctx.font = "bold 8px monospace";
-    ctx.fillText("MODULATION", modLeft + modWidth / 2, rY + ribbonH - 2);
+    ctx.font = "bold 7px monospace";
+    ctx.fillText("MOD", modLeft + modWidth / 2, rY + ribbonH - 4);
 
     // 5. Sustain Toggle button
     const sustX = pianoViewWidth * 0.68;
@@ -600,22 +628,22 @@ export default function App() {
     }
 
     ctx.fillStyle = isSustainActive ? "#000000" : "#8E9299";
-    ctx.font = "bold 8px monospace";
-    ctx.fillText("SUSTAIN", sustX + sustW / 2, bY + 10);
+    ctx.font = "bold 7px monospace";
+    ctx.fillText("SUSTAIN", sustX + sustW / 2, bY + 9);
     ctx.fillStyle = sustTextCol;
-    ctx.font = "bold 11px monospace";
-    ctx.fillText(isSustainActive ? "ACTIVE" : "OFF", sustX + sustW / 2, bY + 23);
+    ctx.font = "bold 10px monospace";
+    ctx.fillText(isSustainActive ? "ON" : "OFF", sustX + sustW / 2, bY + 21);
 
     // 6. Velocity dynamic / fixed button
     const velX = pianoViewWidth * 0.79;
     const velW = 145;
     drawRoundRect(velX, bY, velW, btnH, 3, true, "#25282E");
     ctx.fillStyle = "#8E9299";
-    ctx.font = "bold 8px monospace";
-    ctx.fillText("VELOCITY SENSITIVITY", velX + velW / 2, bY + 10);
+    ctx.font = "bold 7px monospace";
+    ctx.fillText("VEL. SENSITIVITY", velX + velW / 2, bY + 9);
     ctx.fillStyle = isDynamicVelocity ? "#0088FF" : "#E0E0E0";
-    ctx.font = "bold 10px monospace";
-    ctx.fillText(isDynamicVelocity ? "DYNAMIC (Y-AXIS)" : "FIXED (VEL: 100)", velX + velW / 2, bY + 23);
+    ctx.font = "bold 9px monospace";
+    ctx.fillText(isDynamicVelocity ? "DYNAMIC" : "FIXED", velX + velW / 2, bY + 21);
 
     // --- Piano Keyboard Drawing ---
     const yKeyboard = navBarHeight;
