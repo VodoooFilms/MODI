@@ -4,6 +4,8 @@
 
 Controlador **MIDI over BLE** open source para Android, pensado para tocar desde el celular con baja latencia, multitouch real y controles expresivos listos para performance.
 
+![MODI mobile MIDI controller interface](public/modi-interface.jpeg)
+
 ## Resumen
 
 `MODI` nacio como `mobMIDI`, pero hoy apunta a algo mas claro: convertir un telefono Android en un instrumento/controlador BLE MIDI serio, portable y hackeable, compatible con hosts como GarageBand, Audio MIDI Setup en macOS y otros entornos con soporte para Bluetooth LE MIDI.
@@ -33,6 +35,7 @@ Hoy el proyecto ya puede:
 
 ## Demo Visual
 
+- Interfaz del controlador: [public/modi-interface.jpeg](public/modi-interface.jpeg)
 - Logo principal: [public/modi-logo.png](public/modi-logo.png)
 - Favicon / PWA iconos: [public/favicon.png](public/favicon.png), [public/icon-192.png](public/icon-192.png), [public/icon-512.png](public/icon-512.png)
 - APK local compartible: [share/MODI-v1.1-release.apk](share/MODI-v1.1-release.apk)
